@@ -1,3 +1,3 @@
 # isUp
 
-Launch by runnign command `uvicorn app:app`
+Launch by running command `uvicorn app:app`
