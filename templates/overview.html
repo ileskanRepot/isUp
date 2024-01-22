@@ -1,0 +1,28 @@
+<head>
+  <title>Is up</title>
+  <link rel="stylesheet" href="/static/outfit.css" />
+</head>
+<h1>URLs</h1>
+
+<body>
+  <table>
+    <tr>
+      <th>URL</th>
+      <th>Status</th>
+    </tr>
+    {% for url in urls %}
+    <tr>
+      <td><a href="/{{url[2]}}">{{url[0]}}</a></td>
+
+      <td
+        style="background-color: {% if url[1] == 200 %}LightGreen{% else %}OrangeRed{% endif %}"
+      >
+        {{url[1]}}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  <form action="/refresh" method="POST">
+    <input type="submit" value="Refresh" />
+  </form>
+</body>

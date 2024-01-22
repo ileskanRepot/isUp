@@ -1,0 +1,26 @@
+<head>
+  <title>Is up</title>
+  <link rel="stylesheet" href="/static/outfit.css" />
+</head>
+
+<body>
+  <p><a href="/">Home</a></p>
+  <h1><a href="https://{{url[1]}}">{{url[1].upper()}}</a></h1>
+
+  <table>
+    <tr>
+      <th>Time</th>
+      <th>Status</th>
+    </tr>
+    {% for stat in stats %}
+    <tr>
+      <td>{{stat[1].isoformat(' ', 'seconds') }}</td>
+      <td
+        style="background-color: {% if stat[0] == 200 %}LightGreen{% else %}OrangeRed{% endif %}"
+      >
+        {{stat[0]}}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</body>
