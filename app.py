@@ -1,6 +1,5 @@
 import psycopg2
 import requests
-import bcrypt
 
 from fastapi.templating import Jinja2Templates
 from fastapi import FastAPI, Depends, Request
