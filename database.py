@@ -1,16 +1,26 @@
 import psycopg2
+import dbSecret
 
 class Database:
 	def __init__(self):
+		self.lock = False
 		self.conn = self.connect()
 		self.cur = self.conn.cursor()
 
 	def __del__(self):
-		self.cur.close()
-		self.conn.close()
+		if hasattr(self, "cur"):
+			self.cur.close()
+		if hasattr(self, "conn"):
+			self.conn.close()
 
 	def connect(self):
-		conn = psycopg2.connect()
+		conn = psycopg2.connect(
+			user = dbSecret.dbusername, 
+			password = dbSecret.dbpassword,
+			host = dbSecret.dbhost,
+			port = dbSecret.dbport,
+			dbname = dbSecret.dbname 
+		)
 		return conn
 
 	def createTables(self):
@@ -38,25 +48,41 @@ class Database:
 		return self.cur.fetchall()
 
 	def addUrl(self, url, status):
+		while self.lock:
+			pass
+
+		self.lock = True
 		self.cur.execute(
 			"INSERT INTO websites (url, shouldReturn) VALUES (%s, %s)",
 			(url, status,)
 		)
 		self.conn.commit()
+		self.lock = False
 
 	def deleteUrl(self, urlId):
+		while self.lock:
+			pass
+		self.lock = True
+
 		ret = self.cur.execute(
 			"DELETE FROM websites WHERE id = %s",
 			(urlId,)
 		)
 		self.conn.commit()
+		self.lock = False
 
 	def addStatus(self, urlId, status):
+		while self.lock:
+			pass
+		self.lock = True
+
 		self.cur.execute(
 			"INSERT INTO websiteStatus (urlId, statusCode, timeStamp) VALUES (%s, %s, NOW())",
 			(urlId, status,)
 		)
 		self.conn.commit()
+
+		self.lock = False
 
 	def getStatsFromId(self, urlId):
 		self.cur.execute(
