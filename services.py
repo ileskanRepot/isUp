@@ -1,16 +1,17 @@
-from multiprocessing import Pool
 from database import db
 
 import requests
 
 def getReturnCode(link:[int, str, int]):
 	ret = requests.get("https://" + link[1])
-	# print(ret.text)
 	return (link[0], ret.status_code, link[2])
 
 def getReturnCodes(links:[(str,int)]):
-	with Pool() as pool:
-		codes = pool.map(getReturnCode, links)
+	codes = []
+	for link in links:
+		codes.append(getReturnCode(link))
+
+	print(codes)
 	return codes
 
 def getWebsitesFromDB():
@@ -33,6 +34,11 @@ def writeReturnCodes(codes:[[int, str, int]]):
 		db.addStatus(code[0], code[1])
 
 def refreshPages():
+	print("Start refresh")
 	sites = getWebsitesFromDB()
+	print("Middle 1")
 	codes = getReturnCodes(sites)
+	print("Middle 2")
 	writeReturnCodes(codes)
+	print("end refresh")
+	return None
